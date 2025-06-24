@@ -1,6 +1,4 @@
-/* client/src/App.css */
 
-/* Existing styles (unchanged) */
 .app-container {
   min-height: 100vh;
   background-color: #f7fafc;
@@ -117,7 +115,7 @@
   font-weight: 600;
 }
 
-/* client/src/App.css (partial) */
+
 .edit-button {
   background-color: #d69e2e;
   color: white;
