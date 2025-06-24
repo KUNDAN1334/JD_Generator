@@ -6,13 +6,11 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Check if API key is loaded
+
 if (!process.env.GEMINI_API_KEY) {
   console.error('GEMINI_API_KEY is not set in environment variables');
   process.exit(1);
 }
-
-// Initialize Gemini AI with API key
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.use(cors());
@@ -39,7 +37,6 @@ app.post('/api/generate-jd', async (req, res) => {
 - Application Instructions: Clear steps to apply (e.g., email or link).
 Format the JD in markdown with clear headings, bullet points for lists, and enthusiastic yet professional language. Ensure it is fit in one page pdf and keep it clear and concise  and the tone is inclusive and avoids bias.`
 
-    // Use the updated model name
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     // Generate content
