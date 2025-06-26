@@ -4,8 +4,6 @@ import ReactMarkdown from 'react-markdown';
 import { jsPDF } from 'jspdf';
 import './App.css';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-
 function App() {
   const [prompt, setPrompt] = useState('');
   const [jobDescription, setJobDescription] = useState('');
@@ -26,7 +24,7 @@ function App() {
     setEditedJobDescription('');
 
     try {
-      const response = await axios.post(`${API_URL}/api/generate-jd`, { prompt });
+      const response = await axios.post('http://localhost:5000/api/generate-jd', { prompt });
       const jd = response.data.jobDescription;
       setJobDescription(jd);
       setEditedJobDescription(jd);
@@ -49,12 +47,12 @@ function App() {
     doc.text('Job Description', 10, y);
     y += 10;
 
-
+    // Split and process markdown lines
     const lines = editedJobDescription.split('\n');
     lines.forEach((line) => {
       line = line.trim();
       if (line.startsWith('# ')) {
-        
+        // Level 1 header
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
         const text = line.replace('# ', '');
@@ -68,7 +66,7 @@ function App() {
           y += 6;
         });
       } else if (line.startsWith('## ')) {
-        
+        // Level 2 header
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         const text = line.replace('## ', '');
