@@ -4,6 +4,9 @@ import ReactMarkdown from 'react-markdown';
 import { jsPDF } from 'jspdf';
 import './App.css';
 
+// Use environment variable for API URL
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function App() {
   const [prompt, setPrompt] = useState('');
   const [jobDescription, setJobDescription] = useState('');
@@ -24,7 +27,8 @@ function App() {
     setEditedJobDescription('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/generate-jd', { prompt });
+      // Use the API_URL constant instead of hardcoded localhost
+      const response = await axios.post(`${API_URL}/api/generate-jd`, { prompt });
       const jd = response.data.jobDescription;
       setJobDescription(jd);
       setEditedJobDescription(jd);
@@ -36,23 +40,21 @@ function App() {
     }
   };
 
+  // ... rest of your code remains the same
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
-    const pageHeight = 280; // Approx A4 page height in mm (minus margins)
+    const pageHeight = 280;
     let y = 10;
 
-    // Add title
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
     doc.text('Job Description', 10, y);
     y += 10;
 
-    // Split and process markdown lines
     const lines = editedJobDescription.split('\n');
     lines.forEach((line) => {
       line = line.trim();
       if (line.startsWith('# ')) {
-        // Level 1 header
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
         const text = line.replace('# ', '');
@@ -66,7 +68,6 @@ function App() {
           y += 6;
         });
       } else if (line.startsWith('## ')) {
-        // Level 2 header
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         const text = line.replace('## ', '');
@@ -80,11 +81,10 @@ function App() {
           y += 5;
         });
       } else if (line.startsWith('- ')) {
-        // Bullet list
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
         const text = line.replace('- ', '');
-        const splitText = doc.splitTextToSize(text, 175); // Slightly narrower for bullet
+        const splitText = doc.splitTextToSize(text, 175);
         splitText.forEach((splitLine, index) => {
           if (y > pageHeight) {
             doc.addPage();
@@ -94,7 +94,6 @@ function App() {
           y += 5;
         });
       } else if (line.match(/\*\*(.*?)\*\*/)) {
-        // Bold text within line
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
         let x = 10;
@@ -129,7 +128,6 @@ function App() {
         });
         y += 5;
       } else if (line) {
-        // Regular text
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
         const splitText = doc.splitTextToSize(line, 180);
@@ -155,7 +153,6 @@ function App() {
     <div className="app-container">
       <h1 className="app-title">Job Description Generator</h1>
       
-      {/* Prompt Input */}
       <div className="input-section">
         <textarea
           className="prompt-textarea"
@@ -174,7 +171,6 @@ function App() {
         {error && <p className="error-message">{error}</p>}
       </div>
 
-      {/* Job Description Output */}
       {jobDescription && (
         <div className="output-section">
           <div className="flex justify-between items-center mb-4">
