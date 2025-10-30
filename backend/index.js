@@ -13,13 +13,26 @@ if (!process.env.GEMINI_API_KEY) {
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+// IMPORTANT: CORS must be configured BEFORE routes
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://jd-generator-xi.vercel.app'],
-  credentials: true
+  origin: [
+    'http://localhost:5173',
+    'https://jd-generator-three.vercel.app',
+    'https://jd-generator-git-main-kundans-projects-0aacc48c.vercel.app',
+    'https://jd-generator-exuivoeuk-kundans-projects-0aacc48c.vercel.app'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
 }));
+
 app.use(express.json());
 
+// Add preflight handler for all routes
+app.options('*', cors());
 
+// Health check endpoint
 app.get('/', (req, res) => {
   res.json({ status: 'Server is running' });
 });
@@ -48,7 +61,7 @@ app.post('/api/generate-jd', async (req, res) => {
 Format the JD in markdown with clear headings, bullet points for lists, and enthusiastic yet professional language. Ensure it is fit in one page pdf and keep it clear and concise and the tone is inclusive and avoids bias.`;
 
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-flash-latest" 
+      model: "gemini-flash-latest"
     });
     
     const result = await model.generateContent(geminiPrompt);
