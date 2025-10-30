@@ -13,8 +13,8 @@ if (!process.env.GEMINI_API_KEY) {
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// IMPORTANT: CORS must be configured BEFORE routes
-app.use(cors({
+// CORS configuration
+const corsOptions = {
   origin: [
     'http://localhost:5173',
     'https://jd-generator-three.vercel.app',
@@ -25,12 +25,10 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200
-}));
+};
 
+app.use(cors(corsOptions));
 app.use(express.json());
-
-// Add preflight handler for all routes
-app.options('*', cors());
 
 // Health check endpoint
 app.get('/', (req, res) => {
@@ -84,3 +82,4 @@ Format the JD in markdown with clear headings, bullet points for lists, and enth
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
+
