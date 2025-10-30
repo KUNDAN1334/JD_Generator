@@ -19,7 +19,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Health check endpoint
+
 app.get('/', (req, res) => {
   res.json({ status: 'Server is running' });
 });
@@ -47,9 +47,8 @@ app.post('/api/generate-jd', async (req, res) => {
 - Application Instructions: Clear steps to apply (e.g., email or link).
 Format the JD in markdown with clear headings, bullet points for lists, and enthusiastic yet professional language. Ensure it is fit in one page pdf and keep it clear and concise and the tone is inclusive and avoids bias.`;
 
-    // Use gemini-pro - FREE model that actually works!
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-pro"  // Free tier: 60 RPM, 1,500 RPD
+      model: "gemini-flash-latest" 
     });
     
     const result = await model.generateContent(geminiPrompt);
